@@ -10,11 +10,9 @@ const InputField: React.FC<InputFieldProps> = ({ label, value, onChange, icon })
   }, []);
 
   const getStepSize = useCallback((val: number, fieldLabel: string): number => {
-    // Special handling for commission field
     if (fieldLabel.includes('Commission')) {
       return 0.001;
     }
-    // Special handling for premium field
     if (fieldLabel.includes('Premium')) {
       return 0.01;
     }
@@ -34,13 +32,12 @@ const InputField: React.FC<InputFieldProps> = ({ label, value, onChange, icon })
   const getPickerValues = useCallback((currentValue: string | number, fieldLabel: string): Array<{ value: string, index: number }> => {
     const numValue = parseValue(currentValue);
     const stepSize = getStepSize(numValue, fieldLabel);
-    const range = 5; // Reduced range for less screen space
+    const range = 5; // Keep range at 5 to ensure smooth scrolling
     
     const values: Array<{ value: string, index: number }> = [];
     let index = 0;
     
     if (fieldLabel.includes('Commission')) {
-      // Special range for commission (0.014 to 0.026)
       for (let val = 0.014; val <= 0.026; val += 0.001) {
         values.push({
           value: val.toFixed(3),
@@ -48,7 +45,6 @@ const InputField: React.FC<InputFieldProps> = ({ label, value, onChange, icon })
         });
       }
     } else {
-      // Generate values below current value
       for (let i = range; i > 0; i--) {
         const num = Math.max(0, numValue - (stepSize * i));
         values.push({
@@ -57,13 +53,11 @@ const InputField: React.FC<InputFieldProps> = ({ label, value, onChange, icon })
         });
       }
       
-      // Add current value
       values.push({
         value: formatValue(numValue, stepSize),
         index: index++
       });
       
-      // Generate values above current value
       for (let i = 1; i <= range; i++) {
         const num = numValue + (stepSize * i);
         values.push({
@@ -100,7 +94,6 @@ const InputField: React.FC<InputFieldProps> = ({ label, value, onChange, icon })
       const change = e.key === 'ArrowUp' ? stepSize : -stepSize;
       const newValue = Math.max(0, currentValue + change);
       
-      // Validate commission range
       if (label.includes('Commission')) {
         if (newValue < 0.014 || newValue > 0.026) return;
       }
@@ -135,18 +128,42 @@ const InputField: React.FC<InputFieldProps> = ({ label, value, onChange, icon })
         />
       </div>
       
-      {/* Mobile Select - Only shown on mobile, positioned below input */}
       <select
         value={value.toString()}
         onChange={handleSelectChange}
         className="md:hidden w-full bg-[#374151] border-0 text-white text-right appearance-none px-3 py-2 rounded-md mt-2"
+        size={4}
+        style={{
+          height: '120px', // Fixed height for 4 items
+          fontSize: '16px', // Prevent iOS zoom
+          WebkitAppearance: 'none', // Remove default styling
+          scrollbarWidth: 'none', // Firefox
+          msOverflowStyle: 'none', // IE/Edge
+        }}
       >
         {pickerValues.map(({ value: val, index }) => (
-          <option key={`${val}-${index}`} value={val}>
+          <option 
+            key={`${val}-${index}`} 
+            value={val}
+            className="py-2 px-3 hover:bg-[#4a5568]"
+          >
             {val}
           </option>
         ))}
       </select>
+
+      <style jsx>{`
+        select::-webkit-scrollbar {
+          display: none;
+        }
+        
+        select option {
+          padding: 8px 12px;
+          min-height: 30px;
+          display: flex;
+          align-items: center;
+        }
+      `}</style>
     </div>
   );
 };
