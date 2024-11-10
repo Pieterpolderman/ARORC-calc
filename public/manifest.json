@@ -1,7 +1,7 @@
 {
-    "name": "My PWA App",
-    "short_name": "PWA App",
-    "description": "My Progressive Web Application",
+    "name": "ARORC Calculator",
+    "short_name": "ARORC calc",
+    "description": "Anual Return On Risk Capital calculator",
     "start_url": "/",
     "display": "standalone",
     "background_color": "#ffffff",

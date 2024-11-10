@@ -75,12 +75,20 @@ const InputField: React.FC<InputFieldProps> = ({ label, value, onChange, icon })
     if (fieldLabel.includes('Premium')) {
       const values: string[] = [];
       // Start from 0.00 if current value is less than 0.21
-      const startValue = Math.max(0, Math.min(numValue, 0.21));
-      for (let val = startValue; val <= (numValue + 40); val += 0.01) {
+      for (let val = 0.00; val <= 10.00; val += 0.01) {
         values.push(val.toFixed(2));
       }
       return values;
     }
+
+    if (fieldLabel.includes('ARORC')) {
+        const values: string[] = [];
+        // Start from 0.00 if current value is less than 0.21
+        for (let val = 42; val <= 48; val++) {
+          values.push(val.toFixed(2));
+        }
+        return values;
+      }
     
     // Default handling for other fields
     const stepSize = getStepSize(numValue, label);
@@ -121,7 +129,7 @@ const InputField: React.FC<InputFieldProps> = ({ label, value, onChange, icon })
       let newValue = Math.max(0, currentValue + change);
       
       if (label.includes('Commission')) {
-        if (newValue < 0.014 || newValue > 0.026) return;
+        if (newValue < 0.014 || newValue > 0.028) return;
       }
       
       // Enforce step size for Spread field
