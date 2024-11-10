@@ -3,7 +3,7 @@
 'use client';
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { DollarSign, Percent, Calendar, Calculator, Target } from 'lucide-react';
+import { DollarSign, Percent, Calendar, Calculator, Target, ChevronUp, ChevronDown } from 'lucide-react';
 import InputField from '@/components/InputField';
 import OutputField from '@/components/OutputField';
 import { useCalculator } from '@/hooks/useCalculator';

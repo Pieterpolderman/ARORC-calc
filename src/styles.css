@@ -1,0 +1,16 @@
+/* src/styles.css */
+
+/* Only show select dropdown on mobile */
+@media (min-width: 640px) {
+    .mobile-only {
+      display: none;
+    }
+  }
+  
+  /* Hide manual input on mobile */
+  @media (max-width: 640px) {
+    .desktop-only {
+      display: none;
+    }
+  }
+  
