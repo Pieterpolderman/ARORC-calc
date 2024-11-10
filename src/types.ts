@@ -18,17 +18,15 @@ export interface CalculatorValues {
     targetCredit: number;
   }
   
-  // Component prop types
-  export interface InputFieldProps {
-    label: string;
-    value: number;
-    onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
-    icon: JSX.Element;
-  }
-  
   export interface OutputFieldProps {
     label: string;
     value: string;
     color?: string;
   }
   
+  export interface InputFieldProps {
+    label: string;
+    value: string | number;
+    onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+    icon?: React.ReactNode;
+  }
