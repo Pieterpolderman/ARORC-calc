@@ -25,6 +25,12 @@ const InputField: React.FC<InputFieldProps> = ({ label, value, onChange, icon })
     if (fieldLabel.includes('Premium')) {
       return 0.01;
     }
+    if (fieldLabel.includes('DTE')) {
+      return 1;
+    }
+    if (fieldLabel.includes('Spread')) {
+      return 5;
+    }
     if (val < 0.1) return 0.01;
     if (val < 1) return 0.1;
     if (val < 10) return 0.5;
@@ -40,9 +46,8 @@ const InputField: React.FC<InputFieldProps> = ({ label, value, onChange, icon })
 
   const getPickerValues = (currentValue: string | number, fieldLabel: string): string[] => {
     const numValue = parseValue(currentValue);
-    const stepSize = getStepSize(numValue, fieldLabel);
-    const range = 3; // Smaller range for more compact display
     
+    // Special handling for different field types
     if (fieldLabel.includes('Commission')) {
       const values: string[] = [];
       for (let val = 0.014; val <= 0.026; val += 0.001) {
@@ -51,7 +56,37 @@ const InputField: React.FC<InputFieldProps> = ({ label, value, onChange, icon })
       return values;
     }
     
+    if (fieldLabel.includes('Spread')) {
+      const values: string[] = [];
+      for (let val = 0; val <= 65; val += 5) {
+        values.push(val.toString());
+      }
+      return values;
+    }
+
+    if (fieldLabel.includes('DTE')) {
+      const values: string[] = [];
+      for (let val = 1; val <= 65; val++) {
+        values.push(val.toString());
+      }
+      return values;
+    }
+
+    if (fieldLabel.includes('Premium')) {
+      const values: string[] = [];
+      // Start from 0.00 if current value is less than 0.21
+      const startValue = Math.max(0, Math.min(numValue, 0.21));
+      for (let val = startValue; val <= (numValue + 40); val += 0.01) {
+        values.push(val.toFixed(2));
+      }
+      return values;
+    }
+    
+    // Default handling for other fields
+    const stepSize = getStepSize(numValue, label);
+    const range = 3;
     const values: string[] = [];
+    
     for (let i = range; i > 0; i--) {
       const num = Math.max(0, numValue - (stepSize * i));
       values.push(formatValue(num, stepSize));
@@ -83,10 +118,21 @@ const InputField: React.FC<InputFieldProps> = ({ label, value, onChange, icon })
     if (e.key === 'ArrowUp' || e.key === 'ArrowDown') {
       e.preventDefault();
       const change = e.key === 'ArrowUp' ? stepSize : -stepSize;
-      const newValue = Math.max(0, currentValue + change);
+      let newValue = Math.max(0, currentValue + change);
       
       if (label.includes('Commission')) {
         if (newValue < 0.014 || newValue > 0.026) return;
+      }
+      
+      // Enforce step size for Spread field
+      if (label.includes('Spread')) {
+        newValue = Math.round(newValue / 5) * 5;
+        if (newValue > 65) return;
+      }
+
+      // Enforce range for DTE
+      if (label.includes('DTE')) {
+        if (newValue < 1 || newValue > 65) return;
       }
       
       const syntheticEvent = {

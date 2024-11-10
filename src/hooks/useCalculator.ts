@@ -25,11 +25,11 @@ export const useCalculator = () => {
     const netCredit = values.premium - values.commission;
     const riskCapital = values.spread - netCredit;
     const rorc = (netCredit / riskCapital) * 100;
-    const multiple = 365 / values.dte;
-    const arorc = rorc * multiple;
+    const multiple = parseFloat((365 / values.dte).toFixed(1));
+    const arorc = parseFloat((rorc * multiple).toFixed(2));
 
     const targetRorc = values.expectedARORC / multiple;
-    const targetCredit = (targetRorc * values.spread) / (100 + targetRorc);
+    const targetCredit = parseFloat(((targetRorc * values.spread) / (100 + targetRorc)).toFixed(2));
 
     setCalculated({
       netCredit,
